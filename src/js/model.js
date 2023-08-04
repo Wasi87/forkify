@@ -14,7 +14,7 @@ export const state = {
 
 export const loadRecipe = async function (id) {
   try {
-    // 因為getJSON是非同步function，回傳是一個Promimse，所以要用await去存resolved promise
+    // 因為getJSON是非同步function，回傳是一個Promise，所以要用await去存resolved promise
     const data = await getJSON(`${API_URL}/${id}`);
 
     let { recipe } = data.data; //同等於let recipe = data.data.recipe
@@ -63,4 +63,13 @@ export const getSearchResultsPage = function (page = state.search.page) {
   const start = (page - 1) * 10; // 0
   const end = page * state.search.resultsPerPage; // 10
   return state.search.results.slice(start, end);
+};
+
+export const updateServings = function (newServing) {
+  state.recipe.ingredients.forEach(ing => {
+    ing.quantity = (ing.quantity * newServing) / state.recipe.servings; // 2* 8 / 4
+  });
+
+  
+  state.recipe.servings = newServing;
 };
