@@ -1,10 +1,11 @@
 // name export, default export
 import { async } from 'regenerator-runtime';
 import * as model from './model.js';
-// 無法 在contoller這邊傳遞參數給recipeView, 因為object是在recipeView中建立的
+// 無法 在controller這邊傳遞參數給recipeView, 因為object是在recipeView中建立的
 import recipeView from './views/recipeViews.js';
 import searchView from './views/searchView.js';
 import resultsView from './views/resultsView.js';
+import paginationView from './views/paginationView.js';
 
 import 'core-js/stable'; //polyfilling all others 支援舊版瀏覽器
 import 'regenerator-runtime/runtime'; //polyfilling async/await 支援舊版瀏覽器
@@ -56,15 +57,38 @@ const controlSearchResults = async function () {
 
     // 3. render results
     resultsView.render(model.getSearchResultsPage());
+
+    // 4. render initial pagination buttons
+    paginationView.render(model.state.search);
+    console.log('測試');
   } catch (err) {
     console.log(err);
   }
 };
+
+const controlPagination = function (goToPage) {
+  // 1. 渲染 新的結果（下一頁/上一頁）
+  resultsView.render(model.getSearchResultsPage(goToPage));
+
+  // 2. 渲染 新的分頁按鈕
+  paginationView.render(model.state.search);
+};
+
+const controlServings = function (newServings) {
+  // Update the recipe servings (in state)
+  model.updateServings(newServings);
+  // Update the recipe view
+  recipeView.render(model.state.recipe);
+};
+
 // controlRecipes(); 改到下面訂閱模式
 
 const init = function () {
   recipeView.addHandlerRender(controlRecipes);
+  recipeView.addHandlerUpdateServings(controlServings);
   searchView.addHandlerSearch(controlSearchResults);
+  paginationView.addHandlerClick(controlPagination);
+  controlServings();
 };
 
 init();
