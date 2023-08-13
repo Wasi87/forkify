@@ -5,6 +5,7 @@ import * as model from './model.js';
 import recipeView from './views/recipeViews.js';
 import searchView from './views/searchView.js';
 import resultsView from './views/resultsView.js';
+import bookmarksView from './views/bookmarksView.js';
 import paginationView from './views/paginationView.js';
 
 import 'core-js/stable'; //polyfilling all others 支援舊版瀏覽器
@@ -31,6 +32,9 @@ const controlRecipes = async function () {
     if (!id) return;
     recipeView.renderSpinner();
 
+    // 0. 更新 results view to mark selected search result
+    resultsView.update(model.getSearchResultsPage());
+
     // 1. 載入API資料
     await model.loadRecipe(id);
     // const recipe = model.state.recipe
@@ -39,7 +43,6 @@ const controlRecipes = async function () {
     recipeView.render(model.state.recipe);
   } catch (err) {
     // alert(err);
-    console.error(`🦀🦀🦀🦀🦀🦀${err}`);
     recipeView.renderError();
   }
 };
@@ -78,7 +81,8 @@ const controlServings = function (newServings) {
   // Update the recipe servings (in state)
   model.updateServings(newServings);
   // Update the recipe view
-  recipeView.render(model.state.recipe);
+  // recipeView.render(model.state.recipe);
+  recipeView.udpate(model.state.recipe);
 };
 
 // controlRecipes(); 改到下面訂閱模式
