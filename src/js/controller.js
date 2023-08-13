@@ -34,7 +34,6 @@ const controlRecipes = async function () {
 
     // 0. 更新 搜尋結果 不閃爍
     resultsView.update(model.getSearchResultsPage());
-    bookmarksView.update(model.state.bookmarks);
 
     // 1. 載入API資料
     await model.loadRecipe(id);
@@ -42,6 +41,10 @@ const controlRecipes = async function () {
 
     // 2. 渲染食譜
     recipeView.render(model.state.recipe);
+
+    // 3. 更新書籤的頁面
+    // debugger;
+    bookmarksView.update(model.state.bookmarks);
   } catch (err) {
     // alert(err);
     recipeView.renderError();
@@ -86,7 +89,7 @@ const controlServings = function (newServings) {
   recipeView.update(model.state.recipe);
 };
 
-const controlBookmark = function () {
+const controlAddBookmark = function () {
   // 1. 新增/刪除 書籤
   if (!model.state.recipe.bookmarked) model.addBookmark(model.state.recipe);
   else model.deleteBookmark(model.state.recipe.id);
@@ -99,10 +102,14 @@ const controlBookmark = function () {
 };
 // controlRecipes(); 改到下面訂閱模式
 
+const controlBookmarks = function () {
+  bookmarksView.render(model.state.bookmarks);
+};
 const init = function () {
+  bookmarksView.addHandlerRender(controlBookmarks);
   recipeView.addHandlerRender(controlRecipes);
   recipeView.addHandlerUpdateServings(controlServings);
-  recipeView.addHandlerAddBookmark(controlBookmark);
+  recipeView.addHandlerAddBookmark(controlAddBookmark);
   searchView.addHandlerSearch(controlSearchResults);
   paginationView.addHandlerClick(controlPagination);
 };
