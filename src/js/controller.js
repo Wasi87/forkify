@@ -32,7 +32,7 @@ const controlRecipes = async function () {
     if (!id) return;
     recipeView.renderSpinner();
 
-    // 0. 更新 results view to mark selected search result
+    // 0. 更新 搜尋結果 不閃爍
     resultsView.update(model.getSearchResultsPage());
 
     // 1. 載入API資料
@@ -82,17 +82,23 @@ const controlServings = function (newServings) {
   model.updateServings(newServings);
   // Update the recipe view
   // recipeView.render(model.state.recipe);
-  recipeView.udpate(model.state.recipe);
+  recipeView.update(model.state.recipe);
 };
 
+const controlBookmark = function () {
+  if (!model.state.recipe.bookmarked) model.addBookmark(model.state.recipe);
+  else model.deleteBookmark(model.state.recipe.id);
+  console.log(model.state.recipe);
+  recipeView.update(model.state.recipe);
+};
 // controlRecipes(); 改到下面訂閱模式
 
 const init = function () {
   recipeView.addHandlerRender(controlRecipes);
   recipeView.addHandlerUpdateServings(controlServings);
+  recipeView.addHandlerAddBookmark(controlBookmark);
   searchView.addHandlerSearch(controlSearchResults);
   paginationView.addHandlerClick(controlPagination);
-  controlServings();
 };
 
 init();
