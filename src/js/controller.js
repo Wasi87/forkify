@@ -5,8 +5,8 @@ import * as model from './model.js';
 import recipeView from './views/recipeViews.js';
 import searchView from './views/searchView.js';
 import resultsView from './views/resultsView.js';
-import bookmarksView from './views/bookmarksView.js';
 import paginationView from './views/paginationView.js';
+import bookmarksView from './views/bookmarksView.js';
 
 import 'core-js/stable'; //polyfilling all others 支援舊版瀏覽器
 import 'regenerator-runtime/runtime'; //polyfilling async/await 支援舊版瀏覽器
@@ -34,6 +34,7 @@ const controlRecipes = async function () {
 
     // 0. 更新 搜尋結果 不閃爍
     resultsView.update(model.getSearchResultsPage());
+    bookmarksView.update(model.state.bookmarks);
 
     // 1. 載入API資料
     await model.loadRecipe(id);
@@ -86,10 +87,15 @@ const controlServings = function (newServings) {
 };
 
 const controlBookmark = function () {
+  // 1. 新增/刪除 書籤
   if (!model.state.recipe.bookmarked) model.addBookmark(model.state.recipe);
   else model.deleteBookmark(model.state.recipe.id);
-  console.log(model.state.recipe);
+
+  // 2. 渲染 食譜的畫面
   recipeView.update(model.state.recipe);
+
+  // 3. 渲染 右上角書籤的畫面
+  bookmarksView.render(model.state.bookmarks);
 };
 // controlRecipes(); 改到下面訂閱模式
 
