@@ -5,7 +5,7 @@ import icons from 'url:../../img/icons.svg';
 // 用分數顯示
 // var Fraction = require('fractional').Fraction => commonJS模塊的import寫法
 import { Fraction } from 'fractional';
-console.log(Fraction);
+
 
 class RecipeView extends View {
   //parent class called View

@@ -7,9 +7,11 @@ import searchView from './views/searchView.js';
 import resultsView from './views/resultsView.js';
 import paginationView from './views/paginationView.js';
 import bookmarksView from './views/bookmarksView.js';
+import AddRecipeView from './views/addRecipeView.js';
 
 import 'core-js/stable'; //polyfilling all others 支援舊版瀏覽器
 import 'regenerator-runtime/runtime'; //polyfilling async/await 支援舊版瀏覽器
+import addRecipeView from './views/addRecipeView.js';
 
 // 允許在應用程序運行時替換、添加或刪除模組，而無需重新載入整個頁面或應用程序。這在開發過程中對於快速檢查更改的效果非常有用。
 
@@ -105,6 +107,13 @@ const controlAddBookmark = function () {
 const controlBookmarks = function () {
   bookmarksView.render(model.state.bookmarks);
 };
+
+const controlAddRecipe = function (newRecipe) {
+  console.log(newRecipe)
+
+  // Upload new recipe data
+}
+
 const init = function () {
   bookmarksView.addHandlerRender(controlBookmarks);
   recipeView.addHandlerRender(controlRecipes);
@@ -112,6 +121,7 @@ const init = function () {
   recipeView.addHandlerAddBookmark(controlAddBookmark);
   searchView.addHandlerSearch(controlSearchResults);
   paginationView.addHandlerClick(controlPagination);
+  addRecipeView.addHandlerUpload(controlAddRecipe);
 };
 
 init();
