@@ -6,7 +6,6 @@ import icons from 'url:../../img/icons.svg';
 // var Fraction = require('fractional').Fraction => commonJS模塊的import寫法
 import { Fraction } from 'fractional';
 
-
 class RecipeView extends View {
   //parent class called View
   _parentElement = document.querySelector('.recipe');
@@ -81,7 +80,9 @@ class RecipeView extends View {
             </div>
             </div>
 
-            <div class="recipe__user-generated">
+            <div class="recipe__user-generated ${
+              this._data.key ? '' : 'hidden'
+            }">
             <svg>
                 <use href="${icons}#icon-user"></use>
             </svg>
