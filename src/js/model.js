@@ -1,6 +1,6 @@
 import { async } from 'regenerator-runtime';
-import { API_URL, RES_PER_PAGE } from './config.js';
-import { getJSON } from './helpers.js';
+import { API_URL, RES_PER_PAGE, KEY } from './config.js';
+import { getJSON, sendJSON } from './helpers.js';
 //loadRecipe更新食譜，輸出到controller
 export const state = {
   recipe: {},
@@ -13,24 +13,28 @@ export const state = {
   bookmarks: [],
 };
 
+const createRecipeObject = function (data) {
+  const { recipe } = data.data; //同等於let recipe = data.data.recipe
+  //重新定義object裡面的key名稱
+  return {
+    id: recipe.id,
+    title: recipe.title,
+    publisher: recipe.publisher,
+    image: recipe.image_url,
+    sourceUrl: recipe.source_url,
+    servings: recipe.servings,
+    cookingTime: recipe.cooking_time,
+    ingredients: recipe.ingredients,
+    ...(recipe.key && { key: recipe.key }), // Object Spread Operator 檢查recipe.key是否存在，存在回傳key: recipe.key
+  };
+};
+
 export const loadRecipe = async function (id) {
   try {
     // 因為getJSON是非同步function，回傳是一個Promise，所以要用await去存resolved promise
     const data = await getJSON(`${API_URL}/${id}`);
+    state.recipe = createRecipeObject(data);
 
-    let { recipe } = data.data; //同等於let recipe = data.data.recipe
-
-    //重新定義object裡面的key名稱
-    state.recipe = {
-      id: recipe.id,
-      title: recipe.title,
-      publisher: recipe.publisher,
-      image: recipe.image_url,
-      sourceUrl: recipe.source_url,
-      servings: recipe.servings,
-      cookingTime: recipe.cooking_time,
-      ingredients: recipe.ingredients,
-    };
     // if (state.bookmarks.some(b => b.id === id)) state.recipe.bookmarked = true;
     // else state.recipe.bookmarked = false;
 
@@ -46,10 +50,10 @@ export const loadRecipe = async function (id) {
   }
 };
 
-export const loadSearchResults = async function (query) {
+export const loadSearchResults = function (query) {
   try {
     state.search.query = query;
-    const data = await getJSON(`${API_URL}?search=${query}`);
+    const data = getJSON(`${API_URL}?search=${query}`);
     console.log(data);
     state.search.results = data.data.recipes.map(rec => {
       return {
@@ -120,3 +124,33 @@ const clearBookmarks = function () {
 };
 
 // clearBookmarks();
+
+export const uploadRecipe = async function (newRecipe) {
+  try {
+    const ingredients = Object.entries(newRecipe)
+      .filter(entry => entry[0].startsWith('ingredient') && entry[1] !== '')
+      .map(ing => {
+        const ingArr = ing[1].replaceAll(' ', '').split(',');
+        if (ingArr.length !== 3)
+          throw new Error(
+            'Wrong ingredient format! Please use the correct format.'
+          );
+        const [quantity, unit, description] = ingArr;
+        return { quantity: quantity ? +quantity : null, unit, description };
+      });
+    // api接收格式
+    const recipe = {
+      title: newRecipe.title,
+      source_url: newRecipe.sourceUrl,
+      image_url: newRecipe.image,
+      publisher: newRecipe.publisher,
+      cooking_time: newRecipe.cookingTime,
+      servings: newRecipe.servings,
+      ingredients,
+    };
+    const data = await sendJSON(`${API_URL}?key=${KEY}`, recipe);
+    state.recipe = createRecipeObject(data);
+  } catch (err) {
+    throw err;
+  }
+};
