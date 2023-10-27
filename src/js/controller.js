@@ -1,17 +1,17 @@
 // name export, default export
 import { async } from 'regenerator-runtime';
 import * as model from './model.js';
+import { MODAL_CLOSE_SEC } from './config.js';
 // 無法 在controller這邊傳遞參數給recipeView, 因為object是在recipeView中建立的
 import recipeView from './views/recipeViews.js';
 import searchView from './views/searchView.js';
 import resultsView from './views/resultsView.js';
 import paginationView from './views/paginationView.js';
 import bookmarksView from './views/bookmarksView.js';
-import AddRecipeView from './views/addRecipeView.js';
+import addRecipeView from './views/addRecipeView.js';
 
 import 'core-js/stable'; //polyfilling all others 支援舊版瀏覽器
 import 'regenerator-runtime/runtime'; //polyfilling async/await 支援舊版瀏覽器
-import addRecipeView from './views/addRecipeView.js';
 
 // 允許在應用程序運行時替換、添加或刪除模組，而無需重新載入整個頁面或應用程序。這在開發過程中對於快速檢查更改的效果非常有用。
 
@@ -104,15 +104,34 @@ const controlAddBookmark = function () {
 };
 // controlRecipes(); 改到下面訂閱模式
 
-const controlBookmarks = function () {
+const controlBookmarks = async function () {
   bookmarksView.render(model.state.bookmarks);
 };
 
-const controlAddRecipe = function (newRecipe) {
-  console.log(newRecipe)
+const controlAddRecipe = async function (newRecipe) {
+  try {
+    // Show loading spinner
+    addRecipeView.renderSpinner();
 
-  // Upload new recipe data
-}
+    // Upload new recipe data
+    await model.uploadRecipe(newRecipe);
+    console.log(model.state.recipe);
+
+    // Render recipe
+    recipeView.render(model.state.recipe);
+
+    // Success message
+    addRecipeView.renderMessage();
+
+    // Close the window
+    setTimeout(function () {
+      addRecipeView.toggleWindow();
+    }, MODAL_CLOSE_SEC * 1000);
+  } catch (err) {
+    console.error('💣', err);
+    addRecipeView.renderError(err.message);
+  }
+};
 
 const init = function () {
   bookmarksView.addHandlerRender(controlBookmarks);

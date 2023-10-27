@@ -3,6 +3,7 @@ import icons from 'url:../../img/icons.svg';
 
 class AddRecipeView extends View {
   _parentElement = document.querySelector('.upload');
+  _message = 'Recipe was successfully uploaded :)';
 
   _window = document.querySelector('.add-recipe-window');
   _overlay = document.querySelector('.overlay');
@@ -25,20 +26,19 @@ class AddRecipeView extends View {
   }
 
   _addHandlerHideWindow() {
-    this._btnClose.addEventListener('click', this.toggleWindow.bind(this))
-    this._overlay.addEventListener('click', this.toggleWindow.bind(this))
+    this._btnClose.addEventListener('click', this.toggleWindow.bind(this));
+    this._overlay.addEventListener('click', this.toggleWindow.bind(this));
   }
 
   addHandlerUpload(handler) {
-    this._parentElement.addEventListener('submit', function(e){
+    this._parentElement.addEventListener('submit', function (e) {
       e.preventDefault();
-      const dataArr = [...new FormData(this)] //將 form 轉為 arr
-      const data = Object.fromEntries(dataArr) //將 arr 轉為 Object
+      const dataArr = [...new FormData(this)]; //將 form 轉為 arr
+      const data = Object.fromEntries(dataArr); //將 arr 轉為 Object
       handler(data);
-    })
+    });
+  }
 
-    }
-  
   _generateMarkup() {}
 }
 
