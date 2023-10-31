@@ -36,7 +36,7 @@ export default class View {
         !newEl.isEqualNode(curEl) &&
         newEl.firstChild?.nodeValue.trim() !== ''
       ) {
-        curEl.textContext = newEl.textContent;
+        curEl.textContent = newEl.textContent;
       }
 
       // 替換attribute
