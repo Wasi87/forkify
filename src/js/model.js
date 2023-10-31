@@ -1,7 +1,7 @@
 import { async } from 'regenerator-runtime';
 import { API_URL, RES_PER_PAGE, KEY } from './config.js';
 import { AJAX } from './helpers.js';
-//loadRecipe更新食譜，輸出到controller
+
 export const state = {
   recipe: {},
   search: {
@@ -35,16 +35,10 @@ export const loadRecipe = async function (id) {
     const data = await AJAX(`${API_URL}/${id}?key=${KEY}`);
     state.recipe = createRecipeObject(data);
 
-    // if (state.bookmarks.some(b => b.id === id)) state.recipe.bookmarked = true;
-    // else state.recipe.bookmarked = false;
-
     if (state.bookmarks.some(bookmark => bookmark.id === id))
       state.recipe.bookmarked = true;
     else state.recipe.bookmarked = false;
-
-    // console.log(state.recipe);
   } catch (err) {
-    // temp error handling
     console.error(`💣💣💣💣`);
     throw err;
   }
@@ -75,8 +69,8 @@ export const loadSearchResults = async function (query) {
 export const getSearchResultsPage = function (page = state.search.page) {
   state.search.page = page;
 
-  const start = (page - 1) * 10; // 0
-  const end = page * state.search.resultsPerPage; // 10
+  const start = (page - 1) * 10;
+  const end = page * state.search.resultsPerPage;
   return state.search.results.slice(start, end);
 };
 
@@ -132,7 +126,6 @@ export const uploadRecipe = async function (newRecipe) {
       .filter(entry => entry[0].startsWith('ingredient') && entry[1] !== '')
       .map(ing => {
         const ingArr = ing[1].split(',').map(el => el.trim());
-        // const ingArr = ing[1].replaceAll(' ', '').split(',');
         if (ingArr.length !== 3)
           throw new Error(
             'Wrong ingredient format! Please use the correct format.'
@@ -140,6 +133,7 @@ export const uploadRecipe = async function (newRecipe) {
         const [quantity, unit, description] = ingArr;
         return { quantity: quantity ? +quantity : null, unit, description };
       });
+
     // api接收格式
     const recipe = {
       title: newRecipe.title,

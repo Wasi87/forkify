@@ -1,13 +1,8 @@
 import View from './View.js';
-// !!what to export to controller? Class? - controller就要新建object for class, 可能造成有多個view
-// import icons from '../img/icons.svg' //parcel 1
 import icons from 'url:../../img/icons.svg';
-// 用分數顯示
-// var Fraction = require('fractional').Fraction => commonJS模塊的import寫法
 import { Fraction } from 'fractional';
 
 class RecipeView extends View {
-  //parent class called View
   _parentElement = document.querySelector('.recipe');
   _errorMessage = 'We cannot find the recipe. Please find another one!';
   _message = '';
@@ -20,7 +15,6 @@ class RecipeView extends View {
     this._parentElement.addEventListener('click', function (e) {
       const btn = e.target.closest('.btn--update-servings');
       if (!btn) return;
-      console.log(btn);
       const { updateTo } = btn.dataset;
       if (+updateTo > 0) handler(+updateTo);
     });

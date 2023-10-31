@@ -1,4 +1,3 @@
-// name export, default export
 import { async } from 'regenerator-runtime';
 import * as model from './model.js';
 import { MODAL_CLOSE_SEC } from './config.js';
@@ -10,8 +9,8 @@ import paginationView from './views/paginationView.js';
 import bookmarksView from './views/bookmarksView.js';
 import addRecipeView from './views/addRecipeView.js';
 
-import 'core-js/stable'; //polyfilling all others 支援舊版瀏覽器
-import 'regenerator-runtime/runtime'; //polyfilling async/await 支援舊版瀏覽器
+import 'core-js/stable'; // polyfilling all others 支援舊版瀏覽器
+import 'regenerator-runtime/runtime'; // polyfilling async/await 支援舊版瀏覽器
 
 // 允許在應用程序運行時替換、添加或刪除模組，而無需重新載入整個頁面或應用程序。這在開發過程中對於快速檢查更改的效果非常有用。
 
@@ -34,17 +33,17 @@ const controlRecipes = async function () {
     if (!id) return;
     recipeView.renderSpinner();
 
-    // 0. 更新 搜尋結果 不閃爍
+    // 1. 更新 搜尋結果 不閃爍
     resultsView.update(model.getSearchResultsPage());
 
-    // 1. 載入API資料
+    // 2. 載入API資料
     await model.loadRecipe(id);
     // const recipe = model.state.recipe
 
-    // 2. 渲染食譜
+    // 3. 渲染食譜
     recipeView.render(model.state.recipe);
 
-    // 3. 更新書籤的頁面
+    // 4. 更新書籤的頁面
     // debugger;
     bookmarksView.update(model.state.bookmarks);
   } catch (err) {
@@ -57,7 +56,7 @@ const controlSearchResults = async function () {
   try {
     resultsView.renderSpinner();
 
-    // 1. 從View找到form輸入值
+    // 1. 從 View 找到 form輸入值
     const query = searchView.getQuery();
     if (!query) return;
 
@@ -76,7 +75,7 @@ const controlSearchResults = async function () {
 };
 
 const controlPagination = function (goToPage) {
-  // 1. 渲染 新的結果（下一頁/上一頁）
+  // 1. 渲染 新的結果（ 下一頁 /上一頁 ）
   resultsView.render(model.getSearchResultsPage(goToPage));
 
   // 2. 渲染 新的分頁按鈕
@@ -102,7 +101,6 @@ const controlAddBookmark = function () {
   // 3. 渲染 右上角書籤的畫面
   bookmarksView.render(model.state.bookmarks);
 };
-// controlRecipes(); 改到下面訂閱模式
 
 const controlBookmarks = async function () {
   bookmarksView.render(model.state.bookmarks);
@@ -150,11 +148,3 @@ const init = function () {
 };
 
 init();
-
-//改寫成這樣
-// ['hashchange', 'load'].forEach(ev =>
-//   window.addEventListener(ev, controlRecipes)
-// );
-
-// window.addEventListener('hashchange', showRecipe);
-// window.addEventListener('load', showRecipe); //複製貼上網址沒辦法到那個網頁
