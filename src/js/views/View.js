@@ -3,6 +3,12 @@ import icons from 'url:../../img/icons.svg';
 export default class View {
   _data;
 
+  /**
+   *
+   * @param {Object | Object[]} data The data to be rendered (e.g. recipe)
+   * @param {boolean} [render=true] If false, create markup string instead of rendering to the DOM
+   * @returns
+   */
   render(data, render = true) {
     if (!data || (Array.isArray(data) && data.length === 0))
       return this.renderError();
@@ -17,21 +23,17 @@ export default class View {
   }
 
   update(data) {
-    // if (!data || (Array.isArray(data) && data.length === 0))
-    //   return this.renderError();
-
     this._data = data;
     const newMarkup = this._generateMarkup();
 
     const newDOM = document.createRange().createContextualFragment(newMarkup);
     const newElements = Array.from(newDOM.querySelectorAll('*'));
     const curElements = Array.from(this._parentElement.querySelectorAll('*'));
-    // console.log(newElements);
 
     newElements.forEach((newEl, i) => {
       const curEl = curElements[i];
 
-      // 只替換text
+      // 替換 text
       if (
         !newEl.isEqualNode(curEl) &&
         newEl.firstChild?.nodeValue.trim() !== ''
@@ -39,7 +41,7 @@ export default class View {
         curEl.textContent = newEl.textContent;
       }
 
-      // 替換attribute
+      // 替換 attribute
       if (!newEl.isEqualNode(curEl)) {
         Array.from(newEl.attributes).forEach(attr =>
           curEl.setAttribute(attr.name, attr.value)

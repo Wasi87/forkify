@@ -20,7 +20,6 @@ class PaginationView extends View {
     );
     console.log(numPages);
 
-    // 第一頁，不只有一頁
     if (currentPage === 1 && numPages > 1) {
       return `
         <button data-goto="${
@@ -32,7 +31,7 @@ class PaginationView extends View {
           </svg>
         </button>`;
     }
-    // 最後一頁
+
     if (currentPage === numPages && numPages > 1) {
       return `
         <button data-goto="${
@@ -44,7 +43,7 @@ class PaginationView extends View {
           <span>Page ${currentPage - 1}</span>
         </button>`;
     }
-    // 其他頁
+
     if (currentPage < numPages) {
       return `
         <button data-goto="${
@@ -65,7 +64,7 @@ class PaginationView extends View {
         </button>
         `;
     }
-    // 第一頁，只有一頁
+
     if (currentPage === 1) {
       return '';
     }
