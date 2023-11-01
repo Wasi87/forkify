@@ -68,7 +68,6 @@ const controlSearchResults = async function () {
 
     // 4. render initial pagination buttons
     paginationView.render(model.state.search);
-    console.log('測試');
   } catch (err) {
     console.log(err);
   }
