@@ -9,7 +9,7 @@ Forkify is a recipe web app that allows users to search, bookmark, and add your 
 ## Installation
 
 ```
-git clone https://github.com/Wasi87/forkify.git
+GIT_LFS_SKIP_SMUDGE=1 git clone https://github.com/Wasi87/forkify.git
 npm install
 npm run start
 ```
